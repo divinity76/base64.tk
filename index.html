@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>base64 encode/decode</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+</head>
+<body style="">
+	<!-- TODO: add <noscript> javascript-disabled OPTIONAL support -->
+	<!-- TODO: add native javascript base64 implementation for browsers without atob/btoa support -->
+	from text to base64:
+	<input type="radio" name="mode" checked
+		onclick="Javascript:window.mode=1;" />
+	<br /> from base64 to text:
+	<input type="radio" name="mode" onclick="Javascript:window.mode=2;" />
+	<br /> auto update:
+	<input type="checkbox" id="autoUpdate" />
+	<br />
+	<input type="button" value="copy to clipboard"
+		id="copyToClipboardButton" />
+	<br />
+	<input type="button" value="update" id="updateButton" />
+	<br />
+	<textarea id="input"
+		style="width: 100%; resize: none; overflow: hidden; min-height: 50px;"
+		onkeyup="auto_grow(this);" onchange="auto_grow(this);">your text goes here</textarea>
+	<br />
+	<br />
+	<span id="result"
+		style="background-color: grey; display: block; word-wrap: break-word;">your
+		result goes here.</span>
+	<br />
+	<input type="hidden" value="" id="BrowsersAreRetarded" />
+	<small>(note: nothing you put in here leaves your device, the
+		encoding/decoding happens 100% in your browser, based on javascript.)</small>
+	<script>
+"use strict";
+window.mode=1;
+window.$=document.querySelectorAll.bind(document);
+
+function auto_grow(element) {
+    element.style.height = "5px";
+    element.style.height = (element.scrollHeight)+"px";
+}
+(function(){
+	var e_au=$("#autoUpdate")[0];
+	var e_u=$("#updateButton")[0];
+	var e_input=$("#input")[0];
+	var e_res=$("#result")[0];
+	var e_browsersAreRetarded=$("#BrowsersAreRetarded")[0];
+	var update=function(){
+		var text=e_input.value;
+		e_res.textContent=(window.mode===1)?btoa(text):atob(text);
+	};
+	var on=function(e,list,callback){
+		if(!e){throw new Error();}
+		list=list.split(" ");
+		for(var i=0;i<list.length;++i){
+			e.addEventListener(list[i],callback);
+		}
+	};
+	on(e_input,"input change",function(){
+		if(e_au.checked){update();}
+	});
+	on(e_u,"input click submit",update);
+	on($("#copyToClipboardButton")[0],"input click",function(){
+		/*
+		anyone know of a better workaround? need to copy text from a span's textContent into copy&paste
+span doesn't support select
+and elements that are hidden doesn't support select either
+... so here i make an input visible for a fraction of a second, to copy it, and then make it invisible again x.x
+		*/	  
+		  e_browsersAreRetarded.value=e_res.textContent;
+		  e_browsersAreRetarded.type="text";
+		  e_browsersAreRetarded.select();
+		  document.execCommand("Copy");
+		  e_browsersAreRetarded.type="hidden";
+		 //alert("Copied the text: " + copyText.value);
+			 this.style["background-color"]="lime";
+ 			 setTimeout((function(){this.style["background-color"]="";}).bind(this),100);
+	});
+})();
+
+</script>
+
+</body>
+</html>
