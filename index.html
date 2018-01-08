@@ -9,10 +9,9 @@
 	<!-- TODO: add <noscript> javascript-disabled OPTIONAL support -->
 	<!-- TODO: add native javascript base64 implementation for browsers without atob/btoa support -->
 	from text to base64:
-	<input type="radio" name="mode" checked
-		onclick="Javascript:window.mode=1;" />
+	<input type="radio" name="mode" checked />
 	<br /> from base64 to text:
-	<input type="radio" name="mode" onclick="Javascript:window.mode=2;" />
+	<input type="radio" name="mode" />
 	<br /> auto update:
 	<input type="checkbox" checked id="autoUpdate" />
 	<br />
@@ -35,7 +34,6 @@
 		encoding/decoding happens 100% in your browser, based on javascript.)</small>
 	<script>
 "use strict";
-window.mode=1;
 window.$=document.querySelectorAll.bind(document);
 
 function auto_grow(element) {
@@ -48,9 +46,10 @@ function auto_grow(element) {
 	var e_input=$("#input")[0];
 	var e_res=$("#result")[0];
 	var e_browsersAreRetarded=$("#BrowsersAreRetarded")[0];
+	var e_mode=$("[name=mode]")[0];
 	var update=function(){
 		var text=e_input.value;
-		e_res.textContent=(window.mode===1)?btoa(text):atob(text);
+		e_res.textContent=(e_mode.checked)?btoa(text):atob(text);
 	};
 	var on=function(e,list,callback){
 		if(!e){throw new Error();}
